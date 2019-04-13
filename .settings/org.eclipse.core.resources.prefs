@@ -1,6 +1,9 @@
 eclipse.preferences.version=1
-encoding//src/display/MainWindow.java=UTF-8
+encoding//src/display/Main.java=UTF-8
 encoding//src/maze/Maze.java=UTF-8
 encoding//src/maze/MazeSpowner.java=UTF-8
 encoding//src/save/BufferedImageTest.java=UTF-8
 encoding//src/save/SaveMazeAsPicture.java=UTF-8
+encoding/LICENSE=UTF-8
+encoding/LICENSE_CN=UTF-8
+encoding/README.md=UTF-8
