@@ -1,3 +1,29 @@
+/**
+ * 普利姆迷宫生成算法：最常用、最好用的迷宫生成算法之一，其生成的迷宫十分美观，但只能生成单数宽高的迷宫，并且生成的迷宫从终点到起点反走难度比正走低很多
+ * 普利姆迷宫生成算法可以看做简化版的普利姆最小生成树算法，所以如果有时间去了解一下普利姆最小生成树算法会对理解普利姆迷宫生成算法带来很大帮助
+ * 
+ * 普利姆算法生成迷宫包括以下几步：
+ * 
+ * 1.把迷宫填满墙
+ * 
+ * 2.在墙上横竖每隔一格打一个洞，像这样：
+ *    墙墙墙墙墙墙墙墙墙墙墙
+ *    墙　墙　墙　墙　墙　墙
+ *    墙墙墙墙墙墙墙墙墙墙墙
+ *    墙　墙　墙　墙　墙　墙
+ *    墙墙墙墙墙墙墙墙墙墙墙
+ *    墙　墙　墙　墙　墙　墙
+ *    墙墙墙墙墙墙墙墙墙墙墙
+ *    墙　墙　墙　墙　墙　墙
+ *    墙墙墙墙墙墙墙墙墙墙墙
+ *    
+ *  3.选一个洞做起点，从这个点开始生成迷宫
+ *  
+ *  4.最精彩的一步：不是迷宫向外走，而是让外面的洞向迷宫走：选一个和迷宫相邻的洞，把这个洞和迷宫之间的墙打穿，这个洞和打穿的位置就成了迷宫的一部分
+ *  
+ *  一直重复4.直到所有洞都与迷宫连接，生成完毕
+ */
+
 package maze;
 
 import java.awt.Point;
@@ -5,7 +31,13 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 public class MazeSpowner {
+    /**
+     * 开表，用于储存准备雕刻的点
+     */
     private static LinkedList<Point> _readyNodes;
+    /**
+     * 闭表，用于储存已经雕刻的点
+     */
     private static LinkedList<Point> _carvedNodes;
     private static Maze _maze;
 
@@ -38,7 +70,7 @@ public class MazeSpowner {
         _readyNodes = new LinkedList<Point>();
         _carvedNodes = new LinkedList<Point>();
 
-        _nodes = new NodeState[mazeWidth / 2][mazeHeight / 2];
+        _nodes = new NodeState[mazeWidth][mazeHeight];
         for (int y = 0; y < _nodes[0].length; y++)
             for (int x = 0; x < _nodes.length; x++)
                 _nodes[x][y] = NodeState.DEACTIVE;
@@ -97,9 +129,10 @@ public class MazeSpowner {
         Point readyNode = getRandomReadyNode();
         Point carvedNode = getRandomContiguousCarvedNode(readyNode);
 
-        carved(carvedNode, readyNode);
+        carve(carvedNode, readyNode);
         _readyNodes.remove(readyNode);
         _carvedNodes.add(readyNode);
+        _nodes[carvedNode.x][carvedNode.y] = NodeState.CARVED;
     }
 
     private static void carveStartNode() {
@@ -112,14 +145,26 @@ public class MazeSpowner {
          */
         Point startNode = getUncarvedNode();
         _carvedNodes.add(startNode);
-        if (_maze.contains(startNode.x, startNode.y + 2))
+        _nodes[startNode.x][startNode.y] = NodeState.CARVED;
+        if (_maze.contains(startNode.x, startNode.y + 2)) {
             _readyNodes.add(new Point(startNode.x, startNode.y + 2));
-        if (_maze.contains(startNode.x + 2, startNode.y))
+            _nodes[startNode.x][startNode.y + 2] = NodeState.READY_CARVE;
+        }
+        if (_maze.contains(startNode.x + 2, startNode.y)) {
+
             _readyNodes.add(new Point(startNode.x + 2, startNode.y));
-        if (_maze.contains(startNode.x, startNode.y - 2))
+            _nodes[startNode.x + 2][startNode.y] = NodeState.READY_CARVE;
+        }
+        if (_maze.contains(startNode.x, startNode.y - 2)) {
+
             _readyNodes.add(new Point(startNode.x, startNode.y - 2));
-        if (_maze.contains(startNode.x - 2, startNode.y))
+            _nodes[startNode.x][startNode.y - 2] = NodeState.READY_CARVE;
+        }
+        if (_maze.contains(startNode.x - 2, startNode.y)) {
+
             _readyNodes.add(new Point(startNode.x - 2, startNode.y));
+            _nodes[startNode.x-2][startNode.y] = NodeState.READY_CARVE;
+        }
     }
 
     private static Point getUncarvedNode() {
@@ -144,9 +189,14 @@ public class MazeSpowner {
         LinkedList<Point> nodes = getContiguousNodes(centerPoint);
 
         Iterator<Point> nodesIterator = nodes.iterator();
-        while (nodesIterator.hasNext())
-            if (!_carvedNodes.contains(nodesIterator.next()))
+        while (nodesIterator.hasNext()) {
+            Point node = nodesIterator.next();
+            if (_nodes[node.x][node.y] != NodeState.CARVED) {
+                //                System.out.println(_nodes[node.x / 2][node.y / 2]);
+                //            if (!_carvedNodes.contains(node)) {
                 nodesIterator.remove(); // 通过迭代器移除元素，这个方法必须在 next() 之后调用，并且只能移除刚刚通过 next() 获取的元素
+            }
+        }
 
         if (nodes.size() > 0)
             return getRandomNode(nodes);
@@ -178,13 +228,15 @@ public class MazeSpowner {
         return nodes;
     }
 
-    private static void carved(Point startPoint, Point targetPoint) {
+    private static void carve(Point startPoint, Point targetPoint) {
         _maze.setPassable(true, (startPoint.x + targetPoint.x) / 2, (startPoint.y + targetPoint.y) / 2);
 
         LinkedList<Point> contiguousNode = getContiguousNodes(targetPoint);
 
         for (Point point : contiguousNode)
-            if (!_readyNodes.contains(point) && !_carvedNodes.contains(point))
+            if (!_readyNodes.contains(point) && !_carvedNodes.contains(point)) {
                 _readyNodes.add(point);
+                _nodes[point.x][point.y] = NodeState.READY_CARVE;
+            }
     }
 }
