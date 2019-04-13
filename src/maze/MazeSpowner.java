@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 package maze;
 
 import java.awt.Point;
@@ -166,6 +167,8 @@ public class MazeSpowner {
     }
 }
 =======
+=======
+>>>>>>> parent of 7307991... Update MazeSpowner.java
 package maze;
 
 import java.awt.Point;
@@ -193,6 +196,14 @@ public class MazeSpowner {
         _maze = new Maze(width % 2 != 0 ? width : width + 1, height % 2 != 0 ? height : height + 1);
         _readyNodes = new LinkedList<Point>();
         _carvedNodes = new LinkedList<Point>();
+<<<<<<< HEAD
+=======
+
+        _nodes = new NodeState[mazeWidth / 2][mazeHeight / 2];
+        for (int y = 0; y < _nodes[0].length; y++)
+            for (int x = 0; x < _nodes.length; x++)
+                _nodes[x][y] = NodeState.DEACTIVE;
+>>>>>>> parent of 7307991... Update MazeSpowner.java
     }
 
     private static void cleanSpowner() {
@@ -240,10 +251,16 @@ public class MazeSpowner {
             Point readyNode = getRandomReadyNode();
             Point carvedNode = getRandomContiguousCarvedNode(readyNode);
 
+<<<<<<< HEAD
             carved(carvedNode, readyNode);
             _readyNodes.remove(readyNode);
             _carvedNodes.add(readyNode);
         }
+=======
+        carved(carvedNode, readyNode);
+        _readyNodes.remove(readyNode);
+        _carvedNodes.add(readyNode);
+>>>>>>> parent of 7307991... Update MazeSpowner.java
     }
 
     private static void openStartNode() {
