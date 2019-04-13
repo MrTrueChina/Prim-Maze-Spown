@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class MazeSpowner {
+public class MazeSpowner { // AAA
     private static LinkedList<Point> _readyNodes;
     private static LinkedList<Point> _carvedNodes;
     private static Maze _maze;
