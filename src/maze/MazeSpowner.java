@@ -9,6 +9,15 @@ public class MazeSpowner {
     private static LinkedList<Point> _carvedNodes;
     private static Maze _maze;
 
+    private enum NodeState {
+        DEACTIVE, READY_CARVE, CARVED,
+    }
+
+    private static NodeState[][] _nodes;
+
+    private MazeSpowner() {
+    }
+
     public static Maze spown(final int width, final int height) {
         try {
             setupSpowner(width, height);
@@ -22,15 +31,24 @@ public class MazeSpowner {
     }
 
     private static void setupSpowner(final int width, final int height) {
-        _maze = new Maze(width % 2 != 0 ? width : width + 1, height % 2 != 0 ? height : height + 1);
+        int mazeWidth = width % 2 != 0 ? width : width + 1;
+        int mazeHeight = height % 2 != 0 ? height : height + 1;
+
+        _maze = new Maze(mazeWidth, mazeHeight);
         _readyNodes = new LinkedList<Point>();
         _carvedNodes = new LinkedList<Point>();
+
+        _nodes = new NodeState[mazeWidth / 2][mazeHeight / 2];
+        for (int y = 0; y < _nodes[0].length; y++)
+            for (int x = 0; x < _nodes.length; x++)
+                _nodes[x][y] = NodeState.DEACTIVE;
     }
 
     private static void cleanSpowner() {
         _maze = null;
         _readyNodes = null;
         _carvedNodes = null;
+        _nodes = null;
     }
 
     private static void doSpown() {
@@ -54,10 +72,18 @@ public class MazeSpowner {
     }
 
     private static void carveMaze() {
-        long startOpenStartNodeTime = System.currentTimeMillis();       
-        openStartNode();
+        long startOpenStartNodeTime = System.currentTimeMillis();
+        carveStartNode();
         System.out.println("开起点耗时 " + (System.currentTimeMillis() - startOpenStartNodeTime) + " 毫秒");
 
+        while (_readyNodes.size() > 0) {
+            long startCarveNodeTime = System.currentTimeMillis();
+            carveRandomNode();
+            System.out.println("雕刻一个节点耗时 " + (System.currentTimeMillis() - startCarveNodeTime) + " 毫秒");
+        }
+    }
+
+    private static void carveRandomNode() {
         /*
          * 雕刻一个节点
          * 
@@ -68,17 +94,15 @@ public class MazeSpowner {
          * 4、这个点加入闭表
          * 5、这个点周围的点加入开表
          */
-        while (_readyNodes.size() > 0) {
-            Point readyNode = getRandomReadyNode();
-            Point carvedNode = getRandomContiguousCarvedNode(readyNode);
+        Point readyNode = getRandomReadyNode();
+        Point carvedNode = getRandomContiguousCarvedNode(readyNode);
 
-            carved(carvedNode, readyNode);
-            _readyNodes.remove(readyNode);
-            _carvedNodes.add(readyNode);
-        }
+        carved(carvedNode, readyNode);
+        _readyNodes.remove(readyNode);
+        _carvedNodes.add(readyNode);
     }
 
-    private static void openStartNode() {
+    private static void carveStartNode() {
         /*
          * 启动
          * 
