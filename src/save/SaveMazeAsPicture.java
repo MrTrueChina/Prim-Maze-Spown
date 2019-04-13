@@ -12,19 +12,19 @@ import javax.imageio.ImageIO;
 import maze.Maze;
 
 /**
- * ½«ÃÔ¹¬±£´æÎªÍ¼Æ¬µÄÀà
+ * å°†è¿·å®«ä¿å­˜ä¸ºå›¾ç‰‡çš„ç±»
  * 
  * @author Administrator
- * @date 2019Äê4ÔÂ13ÈÕ
+ * @date 2019å¹´4æœˆ13æ—¥
  *
  */
 public class SaveMazeAsPicture {
     /**
-     * ½«ÃÔ¹¬ÒÔ .jpg ¸ñÊ½´æ´¢µ½ÏîÄ¿Â·¾¶
+     * å°†è¿·å®«ä»¥ .jpg æ ¼å¼å­˜å‚¨åˆ°é¡¹ç›®è·¯å¾„
      * 
-     * @param maze     Òª±£´æµÄÃÔ¹¬
-     * @param scale    Ëõ·Å
-     * @param saveFile ±£´æµÄÍ¼Æ¬µÄÎÄ¼şÃû
+     * @param maze     è¦ä¿å­˜çš„è¿·å®«
+     * @param scale    ç¼©æ”¾
+     * @param saveFile ä¿å­˜çš„å›¾ç‰‡çš„æ–‡ä»¶å
      * @throws FileNotFoundException
      * @throws IOException
      * @throws NullPointerException
@@ -33,16 +33,16 @@ public class SaveMazeAsPicture {
     public static void saveMaze(final Maze maze, final int scale, final String saveFile)
             throws FileNotFoundException, IOException, NullPointerException, IllegalArgumentException {
         if (maze == null)
-            throw new NullPointerException("ÃÔ¹¬²»ÄÜÎªnull");
+            throw new NullPointerException("è¿·å®«ä¸èƒ½ä¸ºnull");
         if (scale <= 0)
-            throw new IllegalArgumentException("Ëõ·Å±ÈÀı±ØĞëÊÇÕıÊı");
+            throw new IllegalArgumentException("ç¼©æ”¾æ¯”ä¾‹å¿…é¡»æ˜¯æ­£æ•°");
         if (saveFile == null)
-            throw new NullPointerException("ÎÄ¼şÃû²»ÄÜÎªnull");
+            throw new NullPointerException("æ–‡ä»¶åä¸èƒ½ä¸ºnull");
         if (saveFile == "")
-            throw new IllegalArgumentException("±ØĞëÊäÈëÎÄ¼şÃû");
+            throw new IllegalArgumentException("å¿…é¡»è¾“å…¥æ–‡ä»¶å");
 
         BufferedImage imageBuffer = new BufferedImage(maze.width * scale, maze.height * scale,
-                BufferedImage.TYPE_3BYTE_BGR);
+                BufferedImage.TYPE_BYTE_GRAY);
         Graphics2D graphics = (Graphics2D) imageBuffer.getGraphics();
 
         for (int y = 0; y < maze.height; y++)

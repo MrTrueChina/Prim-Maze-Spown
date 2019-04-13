@@ -1,5 +1,5 @@
 /**
- * ÓÃÓÚ²âÊÔ BufferedImage µÄÀà£¬ÓëÃÔ¹¬Éú³ÉÎŞ¹Ø
+ * ç”¨äºæµ‹è¯• BufferedImage çš„ç±»ï¼Œä¸è¿·å®«ç”Ÿæˆæ— å…³
  */
 
 package save;
@@ -20,12 +20,12 @@ public class BufferedImageTest {
 
         tester.defaultTest();
 
-        tester.typeTest("TYPE_3BYTE_BGR ÑÕÉ«Ä£ĞÍµÄÍ¼Æ¬Ä¬ÈÏ±³¾°ÓĞÑÕÉ«µÄ£¬ÔÚwindowsÉÏÊÇºÚÉ«", "3BYTE_BGR", BufferedImage.TYPE_3BYTE_BGR,
+        tester.typeTest("TYPE_3BYTE_BGR é¢œè‰²æ¨¡å‹çš„å›¾ç‰‡é»˜è®¤èƒŒæ™¯æœ‰é¢œè‰²çš„ï¼Œåœ¨windowsä¸Šæ˜¯é»‘è‰²", "3BYTE_BGR", BufferedImage.TYPE_3BYTE_BGR,
                 "jpg");
-        tester.typeTest("Ê¹ÓÃ .png ºó×ºÃû±£´æ .jpg Í¼Æ¬Í¬Ñù¿ÉÒÔ±£´æ£¬µ«ÑÕÉ«ÏÔÊ¾ºÍ±£´æÎª .jpg ÓĞĞ©Ğí²»Í¬", "3BYTE_BGR", BufferedImage.TYPE_3BYTE_BGR,
+        tester.typeTest("ä½¿ç”¨ .png åç¼€åä¿å­˜ .jpg å›¾ç‰‡åŒæ ·å¯ä»¥ä¿å­˜ï¼Œä½†é¢œè‰²æ˜¾ç¤ºå’Œä¿å­˜ä¸º .jpg æœ‰äº›è®¸ä¸åŒ", "3BYTE_BGR", BufferedImage.TYPE_3BYTE_BGR,
                 "png");
-        tester.typeTest("TYPE_4BYTE_ABGR ÑÕÉ«Ä£ĞÍµÄÍ¼Æ¬Ä¬ÈÏ±³¾°ÊÇÍ¸Ã÷µÄ", "4BYTE_ABGR", BufferedImage.TYPE_4BYTE_ABGR, "png");
-        tester.typeTest("Ê¹ÓÃ .png µÄÑÕÉ«Ä£ĞÍµ«ÓÃ .jpg ºó×ºÃû±£´æ»áµ¼ÖÂÍ¼Æ¬´íÎó£¬Ê¹ÓÃ²»Í¬µÄÈí¼ş´ò¿ªÍ¼Æ¬»áÓĞ²»Í¬Ğ§¹û", "4BYTE_ABGR",
+        tester.typeTest("TYPE_4BYTE_ABGR é¢œè‰²æ¨¡å‹çš„å›¾ç‰‡é»˜è®¤èƒŒæ™¯æ˜¯é€æ˜çš„", "4BYTE_ABGR", BufferedImage.TYPE_4BYTE_ABGR, "png");
+        tester.typeTest("ä½¿ç”¨ .png çš„é¢œè‰²æ¨¡å‹ä½†ç”¨ .jpg åç¼€åä¿å­˜ä¼šå¯¼è‡´å›¾ç‰‡é”™è¯¯ï¼Œä½¿ç”¨ä¸åŒçš„è½¯ä»¶æ‰“å¼€å›¾ç‰‡ä¼šæœ‰ä¸åŒæ•ˆæœ", "4BYTE_ABGR",
                 BufferedImage.TYPE_4BYTE_ABGR, "jpg");
     }
 }
@@ -33,39 +33,39 @@ public class BufferedImageTest {
 class BufferedImageTester {
     void defaultTest() throws FileNotFoundException, IOException {
         BufferedImage imageBuffer = new BufferedImage(150, 70, BufferedImage.TYPE_3BYTE_BGR);
-        //BufferedImage£ºÍ¼Æ¬»º³åÇø£¬Í¼Æ¬ÒªÏÈÔÚÕâ¸ö»º³åÇøÀï´¦Àí£¬´¦ÀíÍê±ÏºóÔÙĞ´µ½Ó²ÅÌ
-        //BufferedImage(int width, int height, int imageType) Ç°Á½¸ö¿í¸ßºÜÃ÷ÏÔ£¬µÚÈı¸öÊÇÍ¼Æ¬µÄÑÕÉ«Ä£ĞÍ£¬¼´ÑÕÉ«´¢´æ·½Ê½
-        //BufferedImage.TYPE_BYTE_GRAY£ºÎŞ·ûºÅbyte»Ò¶ÈÍ¼£¬¾ÍÊÇÆÕÍ¨µÄÖ»ÓĞºÚ°×»ÒµÄ»Ò¶ÈÍ¼
+        //BufferedImageï¼šå›¾ç‰‡ç¼“å†²åŒºï¼Œå›¾ç‰‡è¦å…ˆåœ¨è¿™ä¸ªç¼“å†²åŒºé‡Œå¤„ç†ï¼Œå¤„ç†å®Œæ¯•åå†å†™åˆ°ç¡¬ç›˜
+        //BufferedImage(int width, int height, int imageType) å‰ä¸¤ä¸ªå®½é«˜å¾ˆæ˜æ˜¾ï¼Œç¬¬ä¸‰ä¸ªæ˜¯å›¾ç‰‡çš„é¢œè‰²æ¨¡å‹ï¼Œå³é¢œè‰²å‚¨å­˜æ–¹å¼
+        //BufferedImage.TYPE_BYTE_GRAYï¼šæ— ç¬¦å·byteç°åº¦å›¾ï¼Œå°±æ˜¯æ™®é€šçš„åªæœ‰é»‘ç™½ç°çš„ç°åº¦å›¾
 
         Graphics2D graphics = (Graphics2D) imageBuffer.getGraphics();
-        // BufferedImage.getGraphics()£º»ñÈ¡Õâ¸ö»º³åÇøµÄ Graphics2D ¶ÔÏó£¬µ«ÎªÁË¼æÈİĞÔÓÃ Graphics ÀàĞÍ·µ»Ø
-        //¡¢¶Ô»º³åÇøÄÚÊı¾İµÄ²Ù×÷ÒªÍ¨¹ıÕâ¸ö Graphics2D ¶ÔÏóÀ´½øĞĞ£¬¿ÉÒÔÀí½âÎª»æÖÆ¹¤¾ß¡¢»­±Ê        
+        // BufferedImage.getGraphics()ï¼šè·å–è¿™ä¸ªç¼“å†²åŒºçš„ Graphics2D å¯¹è±¡ï¼Œä½†ä¸ºäº†å…¼å®¹æ€§ç”¨ Graphics ç±»å‹è¿”å›
+        //ã€å¯¹ç¼“å†²åŒºå†…æ•°æ®çš„æ“ä½œè¦é€šè¿‡è¿™ä¸ª Graphics2D å¯¹è±¡æ¥è¿›è¡Œï¼Œå¯ä»¥ç†è§£ä¸ºç»˜åˆ¶å·¥å…·ã€ç”»ç¬”        
 
-        graphics.setColor(Color.CYAN); // ¸ø»­±ÊÉèÖÃÑÕÉ«£¬ÀàËÆÓÚUnityµÄ Gizmo.color
-        graphics.fillRect(0, 0, 150, 70); // Graphics2D.filllRect£º»æÖÆÖ¸¶¨µÄ¾ØĞÎÇøÓò£¬
-        //Graphics2D.filllRect(x, y, width, height)£ºÒÔ¡¾×óÉÏ½Ç¡¿Îª×ø±êÔ­µã£¬Ìî³äÖ¸¶¨µÄ¾ØĞÎÇøÓò
+        graphics.setColor(Color.CYAN); // ç»™ç”»ç¬”è®¾ç½®é¢œè‰²ï¼Œç±»ä¼¼äºUnityçš„ Gizmo.color
+        graphics.fillRect(0, 0, 150, 70); // Graphics2D.filllRectï¼šç»˜åˆ¶æŒ‡å®šçš„çŸ©å½¢åŒºåŸŸï¼Œ
+        //Graphics2D.filllRect(x, y, width, height)ï¼šä»¥ã€å·¦ä¸Šè§’ã€‘ä¸ºåæ ‡åŸç‚¹ï¼Œå¡«å……æŒ‡å®šçš„çŸ©å½¢åŒºåŸŸ
 
         graphics.setColor(Color.RED);
         graphics.drawRect(0, 0, 150 - 1, 70 - 1);
-        //Graphics2D.drawRect(x, y, width, height)£ºÍ¬ÑùÒÔ×óÉÏ½ÇÎª×ø±êÔ­µã£¬»æÖÆÒ»¸ö¾ØĞÎ¿ò
+        //Graphics2D.drawRect(x, y, width, height)ï¼šåŒæ ·ä»¥å·¦ä¸Šè§’ä¸ºåæ ‡åŸç‚¹ï¼Œç»˜åˆ¶ä¸€ä¸ªçŸ©å½¢æ¡†
 
-        graphics.setFont(new Font("ËÎÌå", Font.BOLD, 24));
-        //Graphice.setFont(Font font)£º¸ø»­±ÊÉèÖÃ×ÖÌå£¬ÓÃÓÚºóĞøµÄĞ´ÎÄ×Ö
-        //Font(String name, int style, int size)£º
-        //name£º×ÖÌåÃû³Æ£¬Õâ¸ö×ÖÌåÄÜ·ñÕıÈ·Ê¹ÓÃ²»ÖªµÀÊÇÈ¡¾öÓÚµçÄÔ×ÖÌå¿â»¹ÊÇJavaÓĞÒ»¸ö×Ô´ø×ÖÌå¿â
-        //style£ºÎÄ×ÖÑùÊ½£¬ÀıÈçÆÕÍ¨¡¢¼Ó´Ö¡¢Ğ±ÌåµÈ
-        //size£º×ÖºÅ
+        graphics.setFont(new Font("å®‹ä½“", Font.BOLD, 24));
+        //Graphice.setFont(Font font)ï¼šç»™ç”»ç¬”è®¾ç½®å­—ä½“ï¼Œç”¨äºåç»­çš„å†™æ–‡å­—
+        //Font(String name, int style, int size)ï¼š
+        //nameï¼šå­—ä½“åç§°ï¼Œè¿™ä¸ªå­—ä½“èƒ½å¦æ­£ç¡®ä½¿ç”¨ä¸çŸ¥é“æ˜¯å–å†³äºç”µè„‘å­—ä½“åº“è¿˜æ˜¯Javaæœ‰ä¸€ä¸ªè‡ªå¸¦å­—ä½“åº“
+        //styleï¼šæ–‡å­—æ ·å¼ï¼Œä¾‹å¦‚æ™®é€šã€åŠ ç²—ã€æ–œä½“ç­‰
+        //sizeï¼šå­—å·
 
         graphics.drawString("Hello World!", 0, 70);
-        //Graphics2D.drawString(String str, int x, int y)£ºÔÚÍ¼Æ¬ÉÏ»æÖÆ×Ö·û´®
-        //str£ºÒª»æÖÆµÄ×Ö·û´®
-        //x¡¢y£ºÒÔÍ¼Æ¬×óÉÏ½ÇÎª×ø±êÔ­µãµÄ£¬ÒÔÎÄ×Ö×óÏÂ½ÇÎª×ø±êÖÕµãµÄ×ø±ê£¨ÄÔ²¹Ò»ÏÂPSÎÄ×Ö¹¤¾ßµã»÷»á³öÏÖÏÂ»®Ïß£¬ÎÄ×ÖÔÚÏÂ»®ÏßÉÏÃæ£©
+        //Graphics2D.drawString(String str, int x, int y)ï¼šåœ¨å›¾ç‰‡ä¸Šç»˜åˆ¶å­—ç¬¦ä¸²
+        //strï¼šè¦ç»˜åˆ¶çš„å­—ç¬¦ä¸²
+        //xã€yï¼šä»¥å›¾ç‰‡å·¦ä¸Šè§’ä¸ºåæ ‡åŸç‚¹çš„ï¼Œä»¥æ–‡å­—å·¦ä¸‹è§’ä¸ºåæ ‡ç»ˆç‚¹çš„åæ ‡ï¼ˆè„‘è¡¥ä¸€ä¸‹PSæ–‡å­—å·¥å…·ç‚¹å‡»ä¼šå‡ºç°ä¸‹åˆ’çº¿ï¼Œæ–‡å­—åœ¨ä¸‹åˆ’çº¿ä¸Šé¢ï¼‰
 
         ImageIO.write(imageBuffer, "jpg", new FileOutputStream(getJavaFilePath() + "Hello World.jpg"));
         //ImageIO.write(RenderedImage im, String formatName, OutputStream output)
-        //RenderedImage im£ºÒªÊä³öµÄÍ¼Æ¬£¬±ØĞëÊÇÊµÏÖÁË RenderedImage ½Ó¿ÚµÄÀàµÄ¶ÔÏó£¬BufferedImage ¾ÍÊÇÕâÑùµÄÒ»¸öÀà
-        //¡¾×¢Òâ¡¿ÕâÀï´«µÄÊÇ»º³åÇø£¬²»ÊÇ»­±Ê
-        //String formatName£ººó×ºÃû£¬
+        //RenderedImage imï¼šè¦è¾“å‡ºçš„å›¾ç‰‡ï¼Œå¿…é¡»æ˜¯å®ç°äº† RenderedImage æ¥å£çš„ç±»çš„å¯¹è±¡ï¼ŒBufferedImage å°±æ˜¯è¿™æ ·çš„ä¸€ä¸ªç±»
+        //ã€æ³¨æ„ã€‘è¿™é‡Œä¼ çš„æ˜¯ç¼“å†²åŒºï¼Œä¸æ˜¯ç”»ç¬”
+        //String formatNameï¼šåç¼€åï¼Œ
     }
 
     void typeTest(final String text, final String fileName, final int imageType, final String formatName)
@@ -74,7 +74,7 @@ class BufferedImageTester {
 
         Graphics2D graphics = (Graphics2D) imageBuffer.getGraphics();
 
-        graphics.setFont(new Font("ËÎÌå", Font.BOLD, 18));
+        graphics.setFont(new Font("å®‹ä½“", Font.BOLD, 18));
 
         graphics.setColor(Color.RED);
         graphics.drawString(text, 0, 60);
@@ -83,9 +83,9 @@ class BufferedImageTester {
     }
 
     private String getJavaFilePath() {
-        String path = getClass().getResource("").toString(); // getResource("") : »ñÈ¡Õâ¸öÀàµÄÂ·¾¶£¬Êµ¼ÊÉÏ»ñÈ¡µÄÊÇ±àÒëºóµÄ .class ÎÄ¼şµÄÂ·¾¶
-        path = path.replace("file:/", ""); // »ñÈ¡µ½µÄÄ¿Â¼×îÇ°ÃæÓĞ "file:/" µÄÇ°×º£¬ĞèÒªÈ¥µô²ÅÄÜÊ¹ÓÃ
-        path = path.replace("bin", "src"); // »ñÈ¡µ½µÄÄ¿Â¼ÊÇ bin ÎÄ¼ş¼ĞÏÂµÄ class ÎÄ¼şµÄÄ¿Â¼£¬ĞèÒªĞŞ¸Ä bin Îª src ²ÅÄÜµÃµ½ .java ÎÄ¼ş¼ĞÏÂµÄÄ¿Â¼
+        String path = getClass().getResource("").toString(); // getResource("") : è·å–è¿™ä¸ªç±»çš„è·¯å¾„ï¼Œå®é™…ä¸Šè·å–çš„æ˜¯ç¼–è¯‘åçš„ .class æ–‡ä»¶çš„è·¯å¾„
+        path = path.replace("file:/", ""); // è·å–åˆ°çš„ç›®å½•æœ€å‰é¢æœ‰ "file:/" çš„å‰ç¼€ï¼Œéœ€è¦å»æ‰æ‰èƒ½ä½¿ç”¨
+        path = path.replace("bin", "src"); // è·å–åˆ°çš„ç›®å½•æ˜¯ bin æ–‡ä»¶å¤¹ä¸‹çš„ class æ–‡ä»¶çš„ç›®å½•ï¼Œéœ€è¦ä¿®æ”¹ bin ä¸º src æ‰èƒ½å¾—åˆ° .java æ–‡ä»¶å¤¹ä¸‹çš„ç›®å½•
         return path;
     }
 }

@@ -10,11 +10,11 @@ import save.SaveMazeAsPicture;
 public class MainWindow {
     public static void main(String[] args) throws FileNotFoundException, IOException {
         long startSpownTime = System.currentTimeMillis();
-        Maze maze = MazeSpowner.spown(100, 100);
-        System.out.println("Éú³É×ÜÊ±¼ä = " + (System.currentTimeMillis() - startSpownTime) + "ºÁÃë");
+        Maze maze = MazeSpowner.spown(50, 50);
+        System.out.println("ç”Ÿæˆæ€»æ—¶é—´ = " + (System.currentTimeMillis() - startSpownTime) + "æ¯«ç§’");
 
-        //SaveMazeAsPicture.saveMaze(maze, 3, "ÃÔ¹¬");
+        SaveMazeAsPicture.saveMaze(maze, 3, "è¿·å®«");
 
-        System.out.println("Éú³ÉÍê³É");
+        System.out.println("ç”Ÿæˆå®Œæˆ");
     }
 }

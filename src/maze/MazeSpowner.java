@@ -9,12 +9,17 @@ public class MazeSpowner {
     private static LinkedList<Point> _carvedNodes;
     private static Maze _maze;
 
+    /**
+     * æŒ‰æŒ‡å®šå°ºå¯¸ç”Ÿæˆè¿·å®«ï¼Œå½“å°ºå¯¸ä¸ºåŒæ•°æ—¶è‡ªåŠ¨+1
+     * 
+     * @param width  è¿·å®«çš„å®½åº¦
+     * @param height è¿·å®«çš„é«˜åº¦
+     * @return
+     */
     public static Maze spown(final int width, final int height) {
         try {
             setupSpowner(width, height);
-
             doSpown();
-
             return _maze;
         } finally {
             cleanSpowner();
@@ -36,11 +41,11 @@ public class MazeSpowner {
     private static void doSpown() {
         long startSetupMazeTime = System.currentTimeMillis();
         setupMaze();
-        System.out.println("³õÊ¼»¯ÃÔ¹¬ºÄÊ± " + (System.currentTimeMillis() - startSetupMazeTime) + " ºÁÃë");
+        System.out.println("åˆå§‹åŒ–è¿·å®«è€—æ—¶ " + (System.currentTimeMillis() - startSetupMazeTime) + " æ¯«ç§’");
 
         long startCarveMazeTime = System.currentTimeMillis();
         carveMaze();
-        System.out.println("µñ¿ÌÃÔ¹¬ºÄÊ± " + (System.currentTimeMillis() - startCarveMazeTime) + " ºÁÃë");
+        System.out.println("é›•åˆ»è¿·å®«è€—æ—¶ " + (System.currentTimeMillis() - startCarveMazeTime) + " æ¯«ç§’");
     }
 
     private static void setupMaze() {
@@ -54,56 +59,39 @@ public class MazeSpowner {
     }
 
     private static void carveMaze() {
-        long startOpenStartNodeTime = System.currentTimeMillis();       
+        long startOpenStartNodeTime = System.currentTimeMillis();
         openStartNode();
-        System.out.println("¿ªÆğµãºÄÊ± " + (System.currentTimeMillis() - startOpenStartNodeTime) + " ºÁÃë");
+        System.out.println("å¼€èµ·ç‚¹è€—æ—¶ " + (System.currentTimeMillis() - startOpenStartNodeTime) + " æ¯«ç§’");
+        System.out.println("å¼€èµ·ç‚¹åå¼€è¡¨å†…èŠ‚ç‚¹æ•° = " + _readyNodes.size());
 
-        /*
-         * µñ¿ÌÒ»¸ö½Úµã
-         * 
-         * 0¡¢¸ù¾İÆÕÀïÄ·Ëã·¨£¬Ã¿´ÎÔÚ¿ª±íÀïÕÒÒ»¸öµ½×î½üµÄ±Õ±íµã¾àÀë×î½üµÄµã£¬¶øÕâÀïËùÓĞµãÊÇµÈ¾àµÄ£¬ËùÒÔÊÇËæ»úÕÒÒ»¸ö¿ª±íµÄµãÔÙÁ¬½Óµ½Ëæ»úÒ»¸öÏàÁÚµã
-         * 1¡¢ÔÚ¿ª±íÀïËæ»úÕÒ³öÒ»¸öµã
-         * 2¡¢ÔÚÕâ¸öµãµÄÖÜÎ§ÕÒ³öËùÓĞÔÚ±Õ±íÀïµÄµã
-         * 3¡¢ÔÚÕâĞ©µãÀïËæ»úÕÒÒ»¸ö´òÍ¨
-         * 4¡¢Õâ¸öµã¼ÓÈë±Õ±í
-         * 5¡¢Õâ¸öµãÖÜÎ§µÄµã¼ÓÈë¿ª±í
-         */
         while (_readyNodes.size() > 0) {
-            Point readyNode = getRandomReadyNode();
-            Point carvedNode = getRandomContiguousCarvedNode(readyNode);
-
-            carved(carvedNode, readyNode);
-            _readyNodes.remove(readyNode);
-            _carvedNodes.add(readyNode);
+            long startCarveRandomNodeTime = System.currentTimeMillis();
+            carveRandomNode();
+            System.out.println("éšæœºé›•åˆ»ä¸€ä¸ªèŠ‚ç‚¹è€—æ—¶ " + (System.currentTimeMillis() - startCarveRandomNodeTime) + " æ¯«ç§’");
         }
     }
 
     private static void openStartNode() {
-        /*
-         * Æô¶¯
-         * 
-         * 1¡¢ÕÒÒ»¸öÃ»ÓĞµñ¿ÌµÄµã
-         * 2¡¢Õâ¸öµã¼ÓÈë±Õ±í£¬×÷ÎªÒÑµñ¿ÌµÄµãµÄÖ÷Ìå
-         * 3¡¢Õâ¸öµãÏàÁÚµÄµã¼ÓÈë¿ª±í
-         */
-        Point startNode = getUncarvedNode();
-        _carvedNodes.add(startNode);
-        if (_maze.contains(startNode.x, startNode.y + 2))
-            _readyNodes.add(new Point(startNode.x, startNode.y + 2));
-        if (_maze.contains(startNode.x + 2, startNode.y))
-            _readyNodes.add(new Point(startNode.x + 2, startNode.y));
-        if (_maze.contains(startNode.x, startNode.y - 2))
-            _readyNodes.add(new Point(startNode.x, startNode.y - 2));
-        if (_maze.contains(startNode.x - 2, startNode.y))
-            _readyNodes.add(new Point(startNode.x - 2, startNode.y));
+        Point startNode = new Point(1, 1); // ä»¥å·¦ä¸Šè§’çš„æ´ä½œä¸ºèµ·ç‚¹
+
+        carve(startNode, startNode);
     }
 
-    private static Point getUncarvedNode() {
-        for (int y = 0; y < _maze.height; y++)
-            for (int x = 0; x < _maze.width; x++)
-                if (_maze.getPassable(x, y))
-                    return new Point(x, y);
-        return null;
+    private static void carveRandomNode() {
+        /*
+         * é›•åˆ»ä¸€ä¸ªèŠ‚ç‚¹
+         * 
+         * 0ã€æ ¹æ®æ™®é‡Œå§†ç®—æ³•ï¼Œæ¯æ¬¡åœ¨å¼€è¡¨é‡Œæ‰¾ä¸€ä¸ªåˆ°æœ€è¿‘çš„é—­è¡¨ç‚¹è·ç¦»æœ€è¿‘çš„ç‚¹ï¼Œè€Œè¿™é‡Œæ‰€æœ‰ç‚¹æ˜¯ç­‰è·çš„ï¼Œæ‰€ä»¥æ˜¯éšæœºæ‰¾ä¸€ä¸ªå¼€è¡¨çš„ç‚¹å†è¿æ¥åˆ°éšæœºä¸€ä¸ªç›¸é‚»ç‚¹
+         * 1ã€åœ¨å¼€è¡¨é‡Œéšæœºæ‰¾å‡ºä¸€ä¸ªç‚¹
+         * 2ã€åœ¨è¿™ä¸ªç‚¹çš„å‘¨å›´æ‰¾å‡ºæ‰€æœ‰åœ¨é—­è¡¨é‡Œçš„ç‚¹
+         * 3ã€åœ¨è¿™äº›ç‚¹é‡Œéšæœºæ‰¾ä¸€ä¸ªæ‰“é€š
+         * 4ã€è¿™ä¸ªç‚¹åŠ å…¥é—­è¡¨
+         * 5ã€è¿™ä¸ªç‚¹å‘¨å›´çš„ç‚¹åŠ å…¥å¼€è¡¨
+         */
+        Point readyNode = getRandomReadyNode();
+        Point carvedNode = getRandomContiguousCarvedNode(readyNode);
+
+        carve(carvedNode, readyNode);
     }
 
     private static Point getRandomReadyNode() {
@@ -111,10 +99,10 @@ public class MazeSpowner {
     }
 
     /**
-     * Ëæ»ú»ñÈ¡Ò»¸öÖ¸¶¨½ÚµãÏàÁÚµÄÒÑ¾­µñ¿ÌµÄ½Úµã
+     * éšæœºè·å–ä¸€ä¸ªæŒ‡å®šèŠ‚ç‚¹ç›¸é‚»çš„å·²ç»é›•åˆ»çš„èŠ‚ç‚¹
      * 
-     * @param centerPoint Òª»ñÈ¡ÏàÁÚ½ÚµãµÄ½Úµã
-     * @return Èç¹û´æÔÚÏàÁÚµÄÒÑµñ¿Ì½Úµã£¬Ôò·µ»ØÒ»¸öÒÑµñ¿Ì½Úµã£¬·ñÔò·µ»Ønull
+     * @param centerPoint è¦è·å–ç›¸é‚»èŠ‚ç‚¹çš„èŠ‚ç‚¹
+     * @return å¦‚æœå­˜åœ¨ç›¸é‚»çš„å·²é›•åˆ»èŠ‚ç‚¹ï¼Œåˆ™è¿”å›ä¸€ä¸ªå·²é›•åˆ»èŠ‚ç‚¹ï¼Œå¦åˆ™è¿”å›null
      */
     private static Point getRandomContiguousCarvedNode(final Point centerPoint) {
         LinkedList<Point> nodes = getContiguousNodes(centerPoint);
@@ -122,7 +110,7 @@ public class MazeSpowner {
         Iterator<Point> nodesIterator = nodes.iterator();
         while (nodesIterator.hasNext())
             if (!_carvedNodes.contains(nodesIterator.next()))
-                nodesIterator.remove(); // Í¨¹ıµü´úÆ÷ÒÆ³ıÔªËØ£¬Õâ¸ö·½·¨±ØĞëÔÚ next() Ö®ºóµ÷ÓÃ£¬²¢ÇÒÖ»ÄÜÒÆ³ı¸Õ¸ÕÍ¨¹ı next() »ñÈ¡µÄÔªËØ
+                nodesIterator.remove(); // é€šè¿‡è¿­ä»£å™¨ç§»é™¤å…ƒç´ ï¼Œè¿™ä¸ªæ–¹æ³•å¿…é¡»åœ¨ next() ä¹‹åè°ƒç”¨ï¼Œå¹¶ä¸”åªèƒ½ç§»é™¤åˆšåˆšé€šè¿‡ next() è·å–çš„å…ƒç´ 
 
         if (nodes.size() > 0)
             return getRandomNode(nodes);
@@ -154,13 +142,29 @@ public class MazeSpowner {
         return nodes;
     }
 
-    private static void carved(Point startPoint, Point targetPoint) {
-        _maze.setPassable(true, (startPoint.x + targetPoint.x) / 2, (startPoint.y + targetPoint.y) / 2);
+    private static void carve(Point startNode, Point targetNode) {
+        breakWall(startNode, targetNode);
+        setContiguousDeactiveNodeToReadyList(targetNode);
+        moveNodeToCarved(targetNode);
+    }
 
-        LinkedList<Point> contiguousNode = getContiguousNodes(targetPoint);
+    private static void breakWall(Point startNode, Point targetNode) {
+        System.out.println("startNode = " + startNode);
+        System.out.println("targetNode = " + targetNode);
+        _maze.setPassable(true, (startNode.x + targetNode.x) / 2, (startNode.y + targetNode.y) / 2);
+    }
+
+    private static void setContiguousDeactiveNodeToReadyList(Point centerNode) {
+        LinkedList<Point> contiguousNode = getContiguousNodes(centerNode);
+        System.out.println("ç›¸é‚»èŠ‚ç‚¹æ•°é‡ = " + contiguousNode.size());
 
         for (Point point : contiguousNode)
             if (!_readyNodes.contains(point) && !_carvedNodes.contains(point))
                 _readyNodes.add(point);
+    }
+
+    private static void moveNodeToCarved(Point node) {
+        _readyNodes.remove(node);
+        _carvedNodes.add(node);
     }
 }
