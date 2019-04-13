@@ -201,6 +201,7 @@ public class MazeSpowner {
         _carvedNodes = new LinkedList<Point>();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
         _nodes = new NodeState[mazeWidth / 2][mazeHeight / 2];
@@ -208,6 +209,8 @@ public class MazeSpowner {
             for (int x = 0; x < _nodes.length; x++)
                 _nodes[x][y] = NodeState.DEACTIVE;
 >>>>>>> parent of 7307991... Update MazeSpowner.java
+=======
+>>>>>>> parent of 4ccb7ba... backup
 =======
 >>>>>>> parent of 4ccb7ba... backup
     }
@@ -260,12 +263,16 @@ public class MazeSpowner {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 4ccb7ba... backup
 =======
 >>>>>>> parent of 4ccb7ba... backup
             carved(carvedNode, readyNode);
             _readyNodes.remove(readyNode);
             _carvedNodes.add(readyNode);
         }
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         carved(carvedNode, readyNode);
@@ -277,6 +284,8 @@ public class MazeSpowner {
         _readyNodes.remove(readyNode);
         _carvedNodes.add(readyNode);
 >>>>>>> parent of 7307991... Update MazeSpowner.java
+=======
+>>>>>>> parent of 4ccb7ba... backup
 =======
 >>>>>>> parent of 4ccb7ba... backup
     }
