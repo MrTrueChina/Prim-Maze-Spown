@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 package maze;
 
 import java.awt.Point;
@@ -169,6 +170,8 @@ public class MazeSpowner {
 =======
 =======
 >>>>>>> parent of 7307991... Update MazeSpowner.java
+=======
+>>>>>>> parent of 7307991... Update MazeSpowner.java
 package maze;
 
 import java.awt.Point;
@@ -252,10 +255,16 @@ public class MazeSpowner {
             Point carvedNode = getRandomContiguousCarvedNode(readyNode);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             carved(carvedNode, readyNode);
             _readyNodes.remove(readyNode);
             _carvedNodes.add(readyNode);
         }
+=======
+        carved(carvedNode, readyNode);
+        _readyNodes.remove(readyNode);
+        _carvedNodes.add(readyNode);
+>>>>>>> parent of 7307991... Update MazeSpowner.java
 =======
         carved(carvedNode, readyNode);
         _readyNodes.remove(readyNode);
