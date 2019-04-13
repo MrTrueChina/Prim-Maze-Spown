@@ -58,12 +58,9 @@ public class Main {
         Maze maze = MazeSpowner.spown(50, 50);
         System.out.println("生成总时间 = " + (System.currentTimeMillis() - startSpownTime) + "毫秒");
 
-        SaveMazeAsPicture.saveMaze(maze, 3, "迷宫");
+        BufferedImage mazeImage = SaveMazeAsPicture.mazeToImage(maze, 3);
+        SaveMazeAsPicture.saveImage(mazeImage, "迷宫");
 
         System.out.println("生成完成");
     }
-}
-
-class MainWindow {
-
 }
