@@ -1,6 +1,6 @@
 package display;
 
-import java.awt.Frame;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -8,22 +8,64 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.EventListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JTextArea;
 
-import maze.Maze;
 import maze.MazeSpowner;
-import save.SaveMazeAsPicture;
+import save.SaveMaze;
 
 public class Main {
+    static BufferedImage _mazeImage = SaveMaze.mazeToImage(MazeSpowner.spown(50, 50), 5);
+    static JLabel _imageLabel;
+
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        //主窗口
-        JFrame mainWindow = new JFrame("迷宫生成");
+
+        JFrame mainWindow = getMainWindow();
+
+        //、迷宫图片
+        _imageLabel = new JLabel();
+        _imageLabel.setBounds(25, 25, 550, 550);
+        _imageLabel.setIcon(new ImageIcon(_mazeImage.getScaledInstance(550, -1, Image.SCALE_FAST)));
+        mainWindow.add(_imageLabel);
+
+        //、生成按钮
+        JButton spownButton = new JButton("生成迷宫");
+        spownButton.setBounds(50, 600, 200, 50);
+        spownButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                _mazeImage = SaveMaze.mazeToImage(MazeSpowner.spown(50, 50), 5);
+                _imageLabel.setIcon(new ImageIcon(_mazeImage.getScaledInstance(550, -1, Image.SCALE_FAST)));
+            }
+        });
+        mainWindow.add(spownButton);
+
+        //保存按钮
+        JButton saveButton = new JButton("保存地图");
+        saveButton.setBounds(320, 600, 200, 50);
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    SaveMaze.saveImage(_mazeImage, "迷宫");
+                } catch (FileNotFoundException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            }
+        });
+        mainWindow.add(saveButton);
+
+        mainWindow.setVisible(true);
+    }
+
+    private static JFrame getMainWindow() {
+        JFrame mainWindow = new JFrame("迷宫生成器");
+
         mainWindow.setSize(600, 800);
         mainWindow.setLayout(null);
         mainWindow.addWindowListener(new WindowAdapter() {
@@ -33,34 +75,6 @@ public class Main {
             }
         });
 
-        //迷宫图片
-        ImageIcon icon = new ImageIcon();
-        icon.setImage(new BufferedImage(1000, 1000, BufferedImage.TYPE_3BYTE_BGR));
-        JLabel imageLabel = new JLabel(icon);
-        imageLabel.setBounds(25, 25, 550, 550);
-        mainWindow.add(imageLabel);
-
-        //生成按钮
-        JButton spownButton = new JButton("生成迷宫");
-        spownButton.setSize(200, 50);
-        spownButton.setLocation(200, 600);
-        spownButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-        mainWindow.add(spownButton);
-
-        mainWindow.setVisible(true);
-
-        long startSpownTime = System.currentTimeMillis();
-        Maze maze = MazeSpowner.spown(50, 50);
-        System.out.println("生成总时间 = " + (System.currentTimeMillis() - startSpownTime) + "毫秒");
-
-        BufferedImage mazeImage = SaveMazeAsPicture.mazeToImage(maze, 3);
-        SaveMazeAsPicture.saveImage(mazeImage, "迷宫");
-
-        System.out.println("生成完成");
+        return mainWindow;
     }
 }
