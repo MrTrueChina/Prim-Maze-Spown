@@ -2,6 +2,9 @@ package save;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.FileNotFoundException;
@@ -9,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 import maze.Maze;
 
@@ -19,7 +23,7 @@ import maze.Maze;
  * @date 2019年4月13日
  *
  */
-public class SaveMaze {    
+public class SaveMaze {
     /**
      * 将迷宫转为 byte灰度图并用 BufferedImage 保存返回
      * 
@@ -48,9 +52,28 @@ public class SaveMaze {
 
         return imageBuffer;
     }
-    
+
     public static void saveImage(final RenderedImage image, final String saveFile)
             throws FileNotFoundException, IOException {
         ImageIO.write(image, "jpg", new FileOutputStream(saveFile + ".jpg"));
+    }
+
+    public static void saveImage(final BufferedImage image, final String saveFile, final int scale)
+            throws FileNotFoundException, IOException {
+
+        Image Itemp = image.getScaledInstance(image.getWidth() * scale, image.getHeight() * scale, Image.SCALE_FAST);//设置缩放目标图片模板
+
+        double wr = scale; //获取缩放比例
+        double hr = scale;
+
+        AffineTransformOp ato = new AffineTransformOp(AffineTransform.getScaleInstance(wr, hr), null);
+        Itemp = ato.filter(image, null);
+        
+        ImageIO.write((BufferedImage)Itemp, "jpg", new FileOutputStream(saveFile + ".jpg"));
+
+        //原始部分
+//        Image scaledImage = image.getScaledInstance(image.getWidth() * scale, image.getHeight() * scale,
+//                Image.SCALE_FAST);
+//        ImageIO.write((RenderedImage) scaledImage, "jpg", new FileOutputStream(saveFile + ".jpg"));
     }
 }

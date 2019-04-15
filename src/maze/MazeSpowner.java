@@ -27,7 +27,10 @@ public class MazeSpowner {
     }
 
     private static void setupSpowner(final int width, final int height) {
-        _maze = new Maze(width % 2 != 0 ? width : width + 1, height % 2 != 0 ? height : height + 1);
+        int mazeWidth = width < 3 ? 3 : (width % 2 != 0 ? width : width + 1);
+        int mazeHeight = height < 3  ? 3 : (height % 2 != 0 ? height : height + 1);
+
+        _maze = new Maze(mazeWidth, mazeHeight);
         _readyNodes = new LinkedList<Point>();
         _carvedNodes = new LinkedList<Point>();
     }
@@ -67,7 +70,7 @@ public class MazeSpowner {
         while (_readyNodes.size() > 0) {
             long startCarveRandomNodeTime = System.currentTimeMillis();
             carveRandomNode();
-            System.out.println("随机雕刻一个节点耗时 " + (System.currentTimeMillis() - startCarveRandomNodeTime) + " 毫秒");
+            //            System.out.println("随机雕刻一个节点耗时 " + (System.currentTimeMillis() - startCarveRandomNodeTime) + " 毫秒");
         }
     }
 
@@ -149,14 +152,14 @@ public class MazeSpowner {
     }
 
     private static void breakWall(Point startNode, Point targetNode) {
-        System.out.println("startNode = " + startNode);
-        System.out.println("targetNode = " + targetNode);
+        //        System.out.println("startNode = " + startNode);
+        //        System.out.println("targetNode = " + targetNode);
         _maze.setPassable(true, (startNode.x + targetNode.x) / 2, (startNode.y + targetNode.y) / 2);
     }
 
     private static void setContiguousDeactiveNodeToReadyList(Point centerNode) {
         LinkedList<Point> contiguousNode = getContiguousNodes(centerNode);
-        System.out.println("相邻节点数量 = " + contiguousNode.size());
+        //        System.out.println("相邻节点数量 = " + contiguousNode.size());
 
         for (Point point : contiguousNode)
             if (!_readyNodes.contains(point) && !_carvedNodes.contains(point))
