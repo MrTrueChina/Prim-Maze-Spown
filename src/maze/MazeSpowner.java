@@ -10,6 +10,17 @@ public class MazeSpowner {
     private static Maze _maze;
 
     /**
+     * 重新生成指定迷宫
+     * 
+     * @param maze 要重新生成的迷宫
+     * @return
+     */
+    public static Maze spown(Maze maze) {
+        _maze = maze;
+        return spown(maze.width, maze.height);
+    }
+
+    /**
      * 按指定尺寸生成迷宫，当尺寸为双数时自动+1
      * 
      * @param width  迷宫的宽度
@@ -28,9 +39,10 @@ public class MazeSpowner {
 
     private static void setupSpowner(final int width, final int height) {
         int mazeWidth = width < 3 ? 3 : (width % 2 != 0 ? width : width + 1);
-        int mazeHeight = height < 3  ? 3 : (height % 2 != 0 ? height : height + 1);
+        int mazeHeight = height < 3 ? 3 : (height % 2 != 0 ? height : height + 1);
 
-        _maze = new Maze(mazeWidth, mazeHeight);
+        if (_maze == null)
+            _maze = new Maze(mazeWidth, mazeHeight);
         _readyNodes = new LinkedList<Point>();
         _carvedNodes = new LinkedList<Point>();
     }
@@ -70,7 +82,7 @@ public class MazeSpowner {
         while (_readyNodes.size() > 0) {
             long startCarveRandomNodeTime = System.currentTimeMillis();
             carveRandomNode();
-            //            System.out.println("随机雕刻一个节点耗时 " + (System.currentTimeMillis() - startCarveRandomNodeTime) + " 毫秒");
+            System.out.println("随机雕刻一个节点耗时 " + (System.currentTimeMillis() - startCarveRandomNodeTime) + " 毫秒");
         }
     }
 

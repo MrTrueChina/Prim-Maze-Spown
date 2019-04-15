@@ -183,7 +183,7 @@ public class MainWindow {
         //        System.out.println("_mazeHeight = " + _mazeHeight);
         //        System.out.println("_mazeImageScale = " + _mazeImageScale);
 
-        return SaveMaze.mazeToImage(MazeSpowner.spown(_mazeWidth, _mazeHeight), _mazeImageScale);
+        return SaveMaze.mazeToImage(MazeSpowner.spown(_mazeWidth, _mazeHeight));
     }
 
     private void setMazeImageToImageLabel() {

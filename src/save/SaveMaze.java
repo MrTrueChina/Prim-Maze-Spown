@@ -2,17 +2,14 @@ package save;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
 import maze.Maze;
 
@@ -27,53 +24,41 @@ public class SaveMaze {
     /**
      * 将迷宫转为 byte灰度图并用 BufferedImage 保存返回
      * 
-     * @param maze  需要转为灰度图的迷宫
-     * @param scale 缩放
+     * @param maze 需要转为灰度图的迷宫
      * @return
      * @throws NullPointerException
-     * @throws IllegalArgumentException
      */
-    public static BufferedImage mazeToImage(final Maze maze, final int scale)
-            throws NullPointerException, IllegalArgumentException {
+    public static BufferedImage mazeToImage(final Maze maze) throws NullPointerException {
         if (maze == null)
             throw new NullPointerException("迷宫不能为null");
-        if (scale <= 0)
-            throw new IllegalArgumentException("缩放比例必须是正数");
 
-        BufferedImage imageBuffer = new BufferedImage(maze.width * scale, maze.height * scale,
-                BufferedImage.TYPE_BYTE_GRAY);
+        BufferedImage imageBuffer = new BufferedImage(maze.width, maze.height, BufferedImage.TYPE_BYTE_GRAY);
         Graphics2D graphics = (Graphics2D) imageBuffer.getGraphics();
 
         for (int y = 0; y < maze.height; y++)
             for (int x = 0; x < maze.width; x++) {
                 graphics.setColor(maze.getPassable(x, y) ? Color.WHITE : Color.BLACK);
-                graphics.fillRect(x * scale, y * scale, scale, scale);
+                graphics.fillRect(x, y, 1, 1);
             }
 
         return imageBuffer;
     }
 
-    public static void saveImage(final RenderedImage image, final String saveFile)
-            throws FileNotFoundException, IOException {
-        ImageIO.write(image, "jpg", new FileOutputStream(saveFile + ".jpg"));
-    }
-
     public static void saveImage(final BufferedImage image, final String saveFile, final int scale)
             throws FileNotFoundException, IOException {
 
-        Image Itemp = image.getScaledInstance(image.getWidth() * scale, image.getHeight() * scale, Image.SCALE_FAST);//设置缩放目标图片模板
-
-        double wr = scale; //获取缩放比例
-        double hr = scale;
-
-        AffineTransformOp ato = new AffineTransformOp(AffineTransform.getScaleInstance(wr, hr), null);
-        Itemp = ato.filter(image, null);
+        AffineTransform scaleTransform = AffineTransform.getScaleInstance(scale, scale); // 获取缩放仿射变换
+        //AffineTransfoem.getScaleInstance(double sx, double sy)：按照参数获取一个缩放仿射变换，仿射是个几何学操作，总之这个仿射变换可以按参数缩放图像
         
-        ImageIO.write((BufferedImage)Itemp, "jpg", new FileOutputStream(saveFile + ".jpg"));
+        AffineTransformOp affineTransformOp = new AffineTransformOp(scaleTransform, null);
+        //AffineTransformOp(AffineTransForm xform, RenderingHints hints)：根据仿射变换和渲染提示键创建一个 AffinTransformOp 对象，这个对象是用来执行仿射变换的
+        //AffineTranform xform ：需要执行的放射转换
+        //RenderingHints hints ：渲染提示键，通过渲染提示键可以对渲染算法做出控制
+        
+        BufferedImage scaledImage = affineTransformOp.filter(image, null);
+        //AffineTransformOp.filter(BufferedImage src, BufferedImage dst)：执行构造时传入的仿射变换，将源 BufferedIamge 变换后输出到目标 BufferedIamge 对象里
+        //这个方法同时会返回变换后的 BufferedImage
 
-        //原始部分
-//        Image scaledImage = image.getScaledInstance(image.getWidth() * scale, image.getHeight() * scale,
-//                Image.SCALE_FAST);
-//        ImageIO.write((RenderedImage) scaledImage, "jpg", new FileOutputStream(saveFile + ".jpg"));
+        ImageIO.write((BufferedImage) scaledImage, "jpg", new FileOutputStream(saveFile + ".jpg"));
     }
 }
