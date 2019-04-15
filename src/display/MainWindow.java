@@ -76,7 +76,7 @@ public class MainWindow {
     private JLabel setupedImageLabel() {
         _imageLabel = new JLabel("", JLabel.CENTER);
         _imageLabel.setBounds(25, 25, 550, 550);
-        
+
         return _imageLabel;
     }
 
@@ -163,22 +163,29 @@ public class MainWindow {
         _spownButton.setBounds(50, 650, 200, 50);
         _spownButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                _maze = null;
-                if (_displayThread != null)
-                    _displayThread.interrupt();
+                System.out.println("生成按钮按下");
+                setupSpownThread();
 
                 Spowner mazeSpowner = new Spowner(_mazeWidth, _mazeHeight);
                 _spownThread = new Thread(mazeSpowner);
                 _spownThread.start();
 
-                while (_maze == null)
-                    _maze = mazeSpowner.maze();
+                while (_maze == null) {
+                    Thread.yield(); // 暂停线程是因为主线程需要等待生成线程创建迷宫，占着执行权也没用，不如释放出去增加生成线程抢到执行权的机会
+                    _maze = mazeSpowner.maze(); // 生成线程启动后主线程有可能立即抢回执行权，丝毫不减速的继续执行，很可能获取的时候生成线程还没有创建出地图，所以要一直循环直到获取到地图                
+                }
 
                 _displayThread = new Thread(new SpownDisplayer(_maze, _imageLabel, _spownThread));
                 _displayThread.start();
             }
+
+            private void setupSpownThread() {
+                _maze = null; // 后续操作根据地图是否为null判断是否获取到了新生成的地图，所以这里要先把地图改为null
+                if (_displayThread != null)
+                    _displayThread.interrupt();
+            }
         });
-        
+
         _spownButton.getActionListeners()[0].actionPerformed(null);
 
         return _spownButton;

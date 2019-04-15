@@ -6,8 +6,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 public class MazeSpowner {
-    private LinkedList<Point> _readyNodes;
-    private ArrayList<Point> _carvedNodes;
+    private LinkedList<Point> _readyNodes; // 开表，用于存储准备雕刻的节点
+    private ArrayList<Point> _carvedNodes; // 闭表，用于存储雕刻完毕的节点
     private Maze _maze;
 
     public Maze maze() {
@@ -24,6 +24,7 @@ public class MazeSpowner {
     public synchronized Maze spown(final int width, final int height) {
         try {
             setupSpowner(width, height);
+            System.out.println(_maze);
             doSpown();
             return _maze;
         } finally {
@@ -32,8 +33,8 @@ public class MazeSpowner {
     }
 
     private void setupSpowner(final int width, final int height) {
-        int mazeWidth = width < 3 ? 3 : (width % 2 != 0 ? width : width + 1);
-        int mazeHeight = height < 3 ? 3 : (height % 2 != 0 ? height : height + 1);
+        int mazeWidth = width < 3 ? 3 : (width % 2 != 0 ? width : width + 1); // 如果宽度小于3则迷宫无法生成，如果宽度小于2则会在后面抛异常，如果宽度为双数虽然不会报错但会生成错误
+        int mazeHeight = height < 3 ? 3 : (height % 2 != 0 ? height : height + 1); // 宽度也是一样，所以限制至少为3，双数+1
 
         _maze = new Maze(mazeWidth, mazeHeight);
         _readyNodes = new LinkedList<Point>();
@@ -41,7 +42,7 @@ public class MazeSpowner {
     }
 
     private void cleanSpowner() {
-        _maze = null;
+        //_maze = null; // 有一种极少发生的特殊情况：生成线程生成的时间内主线程没有抢到执行权导致主线程没有成功的拿到地图，此时生成线程一旦抛弃了对地图的引用，主线程将永远获取不到地图陷入死循环
         _readyNodes = null;
         _carvedNodes = null;
     }
@@ -70,9 +71,9 @@ public class MazeSpowner {
         openStartNode();
 
         while (_readyNodes.size() > 0) {
-//            long startCarveRandomNodeTime = System.currentTimeMillis();
+            //            long startCarveRandomNodeTime = System.currentTimeMillis();
             carveRandomNode();
-//            System.out.println("随机雕刻一个节点耗时 " + (System.currentTimeMillis() - startCarveRandomNodeTime) + " 毫秒");
+            //            System.out.println("随机雕刻一个节点耗时 " + (System.currentTimeMillis() - startCarveRandomNodeTime) + " 毫秒");
         }
     }
 
