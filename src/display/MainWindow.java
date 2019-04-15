@@ -8,7 +8,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -23,12 +22,7 @@ import maze.MazeSpowner;
 import save.SaveMaze;
 
 public class MainWindow {
-    private static final int DEFAULT_WIDTH = 50;
-    private static final int DEFAULT_HEIGHT = 50;
-    private static final int DEFAULT_SCALE = 3;
-
     private Maze _maze;
-    private BufferedImage _mazeImage;
     private JLabel _imageLabel;
     private JButton _spownButton;
     private JButton _saveButton;
@@ -38,35 +32,25 @@ public class MainWindow {
     private Thread _displayThread;
     private Thread _spownThread;
 
-    private int _mazeWidth;
-    private int _mazeHeight;
-    private int _mazeImageScale;
+    private int _mazeWidth = 20;
+    private int _mazeHeight = 20;
+    private int _mazeImageScale = 5;
 
     public MainWindow() throws FileNotFoundException, IOException {
         setup();
     }
 
     private void setup() throws FileNotFoundException, IOException {
-        setupMazeImage();
-        setupUI();
-    }
-
-    private void setupMazeImage() {
-        _mazeWidth = DEFAULT_WIDTH;
-        _mazeHeight = DEFAULT_HEIGHT;
-        _mazeImageScale = DEFAULT_SCALE;
-
-        _mazeImage = getMazeImage();
-    }
-
-    private void setupUI() {
         JFrame mainWindow = getMainWindow();
 
         mainWindow.add(setupedImageLabel());
         mainWindow.add(setupSpownButton());
         mainWindow.add(setupSaveButton());
+        mainWindow.add(setUpWidthLabel());
         mainWindow.add(setupWidthText());
+        mainWindow.add(setUpHeightLabel());
         mainWindow.add(setupHeightText());
+        mainWindow.add(setUpScaleLabel());
         mainWindow.add(setupScaleText());
 
         mainWindow.setVisible(true);
@@ -92,58 +76,82 @@ public class MainWindow {
     private JLabel setupedImageLabel() {
         _imageLabel = new JLabel("", JLabel.CENTER);
         _imageLabel.setBounds(25, 25, 550, 550);
-        setMazeImageToImageLabel();
+        
         return _imageLabel;
     }
 
+    private JLabel setUpWidthLabel() {
+        JLabel widthLabel = new JLabel("宽度：");
+        widthLabel.setBounds(25, 600, 50, 30);
+
+        return widthLabel;
+    }
+
     private JTextField setupWidthText() {
-        _widthText = new JTextField(DEFAULT_WIDTH);
-        _widthText.setBounds(25, 600, 150, 30);
+        _widthText = new JTextField();
+        _widthText.setBounds(75, 600, 100, 30);
         _widthText.setText(_mazeWidth + "");
 
         _widthText.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                if (_widthText.getText().matches("[1-9][0-9]*"))
+                try {
                     _mazeWidth = Integer.parseInt(_widthText.getText());
-                else
+                } catch (Exception e2) {
                     _widthText.setText(_mazeWidth + "");
+                }
             }
         });
 
         return _widthText;
     }
 
+    private JLabel setUpHeightLabel() {
+        JLabel heightLabel = new JLabel("高度：");
+        heightLabel.setBounds(225, 600, 50, 30);
+
+        return heightLabel;
+    }
+
     private JTextField setupHeightText() {
-        _heightText = new JTextField(DEFAULT_WIDTH);
-        _heightText.setBounds(225, 600, 150, 30);
+        _heightText = new JTextField();
+        _heightText.setBounds(275, 600, 100, 30);
         _heightText.setText(_mazeHeight + "");
 
         _heightText.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                if (_heightText.getText().matches("[1-9][0-9]*"))
+                try {
                     _mazeHeight = Integer.parseInt(_heightText.getText());
-                else
+                } catch (Exception e2) {
                     _heightText.setText(_mazeHeight + "");
+                }
             }
         });
 
         return _heightText;
     }
 
+    private JLabel setUpScaleLabel() {
+        JLabel scaleLabel = new JLabel("缩放：");
+        scaleLabel.setBounds(425, 600, 50, 30);
+
+        return scaleLabel;
+    }
+
     private JTextField setupScaleText() {
-        _scaleText = new JTextField(DEFAULT_SCALE);
-        _scaleText.setBounds(425, 600, 150, 30);
+        _scaleText = new JTextField();
+        _scaleText.setBounds(475, 600, 100, 30);
         _scaleText.setText(_mazeImageScale + "");
 
         _scaleText.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                if (_scaleText.getText().matches("[1-9][0-9]*"))
+                try {
                     _mazeImageScale = Integer.parseInt(_scaleText.getText());
-                else
+                } catch (Exception e2) {
                     _scaleText.setText(_mazeImageScale + "");
+                }
             }
         });
 
@@ -156,19 +164,22 @@ public class MainWindow {
         _spownButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 _maze = null;
-                if (_displayThread != null) {
+                if (_displayThread != null)
                     _displayThread.interrupt();
-                    _displayThread = null;
-                }
 
-                _maze = new Maze(_mazeWidth, _mazeHeight);
-                _displayThread = new Thread(new SpownDisplayer(_maze, _imageLabel));
-                _displayThread.start();
-
-                _spownThread = new Thread(new Spowner(_maze));
+                Spowner mazeSpowner = new Spowner(_mazeWidth, _mazeHeight);
+                _spownThread = new Thread(mazeSpowner);
                 _spownThread.start();
+
+                while (_maze == null)
+                    _maze = mazeSpowner.maze();
+
+                _displayThread = new Thread(new SpownDisplayer(_maze, _imageLabel, _spownThread));
+                _displayThread.start();
             }
         });
+        
+        _spownButton.getActionListeners()[0].actionPerformed(null);
 
         return _spownButton;
     }
@@ -179,12 +190,10 @@ public class MainWindow {
         _saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    SaveMaze.saveImage(_mazeImage, "迷宫", _mazeImageScale);
+                    SaveMaze.saveImage(SaveMaze.mazeToImage(_maze), "迷宫", _mazeImageScale);
                 } catch (FileNotFoundException e1) {
-                    // TODO Auto-generated catch block
                     e1.printStackTrace();
                 } catch (IOException e1) {
-                    // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
             }
@@ -192,60 +201,58 @@ public class MainWindow {
 
         return _saveButton;
     }
-
-    private BufferedImage getMazeImage() {
-        return SaveMaze.mazeToImage(MazeSpowner.spown(_mazeWidth, _mazeHeight));
-    }
-
-    private void setMazeImageToImageLabel() {
-        Image scaledMazeImage;
-        if (_mazeImage.getWidth() > _mazeImage.getHeight())
-            scaledMazeImage = _mazeImage.getScaledInstance(550, -1, Image.SCALE_FAST);
-        else
-            scaledMazeImage = _mazeImage.getScaledInstance(-1, 550, Image.SCALE_FAST);
-
-        _imageLabel.setIcon(new ImageIcon(scaledMazeImage));
-    }
 }
 
 class Spowner implements Runnable {
-    Maze _maze;
+    int _width;
+    int _height;
+    MazeSpowner _mazeSpowner = null;
 
-    public Spowner(Maze maze) {
-        _maze = maze;
+    public Spowner(int width, int height) {
+        _width = width;
+        _height = height;
+        _mazeSpowner = new MazeSpowner();
+    }
+
+    public Maze maze() {
+        return _mazeSpowner.maze();
     }
 
     @Override
     public void run() {
-        MazeSpowner.spown(_maze);
+        _mazeSpowner.spown(_width, _height);
     }
 }
 
 class SpownDisplayer implements Runnable {
     Maze _maze;
-    JLabel _mazeImage;
+    JLabel _mazeImageLabel;
+    Thread _spownThread;
 
-    public SpownDisplayer(Maze maze, JLabel mazeImage) {
+    public SpownDisplayer(Maze maze, JLabel mazeImage, Thread spownThread) {
         _maze = maze;
-        _mazeImage = mazeImage;
+        _mazeImageLabel = mazeImage;
+        _spownThread = spownThread;
     }
 
     @Override
     public void run() {
         while (true) {
-            if (Thread.currentThread().isInterrupted())
-                return;
+            if (!_spownThread.isAlive() || Thread.currentThread().isInterrupted())
+                break;
             setMazeImageToImageLabel();
         }
+
+        setMazeImageToImageLabel();
     }
 
     private void setMazeImageToImageLabel() {
         Image scaledMazeImage;
-        if (_mazeImage.getWidth() > _mazeImage.getHeight())
+        if (_maze.getWidth() > _maze.getHeight())
             scaledMazeImage = SaveMaze.mazeToImage(_maze).getScaledInstance(550, -1, Image.SCALE_FAST);
         else
             scaledMazeImage = SaveMaze.mazeToImage(_maze).getScaledInstance(-1, 550, Image.SCALE_FAST);
-        System.out.println("存入图片");
-        _mazeImage.setIcon(new ImageIcon(scaledMazeImage));
+
+        _mazeImageLabel.setIcon(new ImageIcon(scaledMazeImage));
     }
 }

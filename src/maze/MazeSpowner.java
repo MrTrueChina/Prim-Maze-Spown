@@ -1,23 +1,17 @@
 package maze;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 public class MazeSpowner {
-    private static LinkedList<Point> _readyNodes;
-    private static LinkedList<Point> _carvedNodes;
-    private static Maze _maze;
+    private LinkedList<Point> _readyNodes;
+    private ArrayList<Point> _carvedNodes;
+    private Maze _maze;
 
-    /**
-     * 重新生成指定迷宫
-     * 
-     * @param maze 要重新生成的迷宫
-     * @return
-     */
-    public static Maze spown(Maze maze) {
-        _maze = maze;
-        return spown(maze.width, maze.height);
+    public Maze maze() {
+        return _maze;
     }
 
     /**
@@ -27,7 +21,7 @@ public class MazeSpowner {
      * @param height 迷宫的高度
      * @return
      */
-    public static Maze spown(final int width, final int height) {
+    public synchronized Maze spown(final int width, final int height) {
         try {
             setupSpowner(width, height);
             doSpown();
@@ -37,23 +31,22 @@ public class MazeSpowner {
         }
     }
 
-    private static void setupSpowner(final int width, final int height) {
+    private void setupSpowner(final int width, final int height) {
         int mazeWidth = width < 3 ? 3 : (width % 2 != 0 ? width : width + 1);
         int mazeHeight = height < 3 ? 3 : (height % 2 != 0 ? height : height + 1);
 
-        if (_maze == null)
-            _maze = new Maze(mazeWidth, mazeHeight);
+        _maze = new Maze(mazeWidth, mazeHeight);
         _readyNodes = new LinkedList<Point>();
-        _carvedNodes = new LinkedList<Point>();
+        _carvedNodes = new ArrayList<Point>();
     }
 
-    private static void cleanSpowner() {
+    private void cleanSpowner() {
         _maze = null;
         _readyNodes = null;
         _carvedNodes = null;
     }
 
-    private static void doSpown() {
+    private void doSpown() {
         long startSetupMazeTime = System.currentTimeMillis();
         setupMaze();
         System.out.println("初始化迷宫耗时 " + (System.currentTimeMillis() - startSetupMazeTime) + " 毫秒");
@@ -63,7 +56,7 @@ public class MazeSpowner {
         System.out.println("雕刻迷宫耗时 " + (System.currentTimeMillis() - startCarveMazeTime) + " 毫秒");
     }
 
-    private static void setupMaze() {
+    private void setupMaze() {
         for (int x = 1; x < _maze.width; x++)
             for (int y = 1; y < _maze.height; y++)
                 _maze.setPassable(false, x, y);
@@ -73,26 +66,23 @@ public class MazeSpowner {
                 _maze.setPassable(true, x, y);
     }
 
-    private static void carveMaze() {
-        long startOpenStartNodeTime = System.currentTimeMillis();
+    private void carveMaze() {
         openStartNode();
-        System.out.println("开起点耗时 " + (System.currentTimeMillis() - startOpenStartNodeTime) + " 毫秒");
-        System.out.println("开起点后开表内节点数 = " + _readyNodes.size());
 
         while (_readyNodes.size() > 0) {
-            long startCarveRandomNodeTime = System.currentTimeMillis();
+//            long startCarveRandomNodeTime = System.currentTimeMillis();
             carveRandomNode();
-            System.out.println("随机雕刻一个节点耗时 " + (System.currentTimeMillis() - startCarveRandomNodeTime) + " 毫秒");
+//            System.out.println("随机雕刻一个节点耗时 " + (System.currentTimeMillis() - startCarveRandomNodeTime) + " 毫秒");
         }
     }
 
-    private static void openStartNode() {
+    private void openStartNode() {
         Point startNode = new Point(1, 1); // 以左上角的洞作为起点
 
         carve(startNode, startNode);
     }
 
-    private static void carveRandomNode() {
+    private void carveRandomNode() {
         /*
          * 雕刻一个节点
          * 
@@ -109,7 +99,7 @@ public class MazeSpowner {
         carve(carvedNode, readyNode);
     }
 
-    private static Point getRandomReadyNode() {
+    private Point getRandomReadyNode() {
         return getRandomNode(_readyNodes);
     }
 
@@ -119,7 +109,7 @@ public class MazeSpowner {
      * @param centerPoint 要获取相邻节点的节点
      * @return 如果存在相邻的已雕刻节点，则返回一个已雕刻节点，否则返回null
      */
-    private static Point getRandomContiguousCarvedNode(final Point centerPoint) {
+    private Point getRandomContiguousCarvedNode(final Point centerPoint) {
         LinkedList<Point> nodes = getContiguousNodes(centerPoint);
 
         Iterator<Point> nodesIterator = nodes.iterator();
@@ -132,17 +122,17 @@ public class MazeSpowner {
         return null;
     }
 
-    private static Point getRandomNode(LinkedList<Point> nodes) {
+    private Point getRandomNode(LinkedList<Point> nodes) {
         if (nodes.size() != 0)
             return nodes.get(random(nodes.size()));
         return null;
     }
 
-    private static int random(int bound) {
+    private int random(int bound) {
         return (int) (Math.random() * bound);
     }
 
-    private static LinkedList<Point> getContiguousNodes(final Point centerPoint) {
+    private LinkedList<Point> getContiguousNodes(final Point centerPoint) {
         LinkedList<Point> nodes = new LinkedList<Point>();
 
         if (_maze.contains(centerPoint.x, centerPoint.y + 2))
@@ -157,28 +147,25 @@ public class MazeSpowner {
         return nodes;
     }
 
-    private static void carve(Point startNode, Point targetNode) {
+    private void carve(Point startNode, Point targetNode) {
         breakWall(startNode, targetNode);
         setContiguousDeactiveNodeToReadyList(targetNode);
         moveNodeToCarved(targetNode);
     }
 
-    private static void breakWall(Point startNode, Point targetNode) {
-        //        System.out.println("startNode = " + startNode);
-        //        System.out.println("targetNode = " + targetNode);
+    private void breakWall(Point startNode, Point targetNode) {
         _maze.setPassable(true, (startNode.x + targetNode.x) / 2, (startNode.y + targetNode.y) / 2);
     }
 
-    private static void setContiguousDeactiveNodeToReadyList(Point centerNode) {
+    private void setContiguousDeactiveNodeToReadyList(Point centerNode) {
         LinkedList<Point> contiguousNode = getContiguousNodes(centerNode);
-        //        System.out.println("相邻节点数量 = " + contiguousNode.size());
 
         for (Point point : contiguousNode)
             if (!_readyNodes.contains(point) && !_carvedNodes.contains(point))
                 _readyNodes.add(point);
     }
 
-    private static void moveNodeToCarved(Point node) {
+    private void moveNodeToCarved(Point node) {
         _readyNodes.remove(node);
         _carvedNodes.add(node);
     }
