@@ -163,7 +163,6 @@ public class MainWindow {
         _spownButton.setBounds(50, 650, 200, 50);
         _spownButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("生成按钮按下");
                 setupSpownThread();
 
                 Spowner mazeSpowner = new Spowner(_mazeWidth, _mazeHeight);

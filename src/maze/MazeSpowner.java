@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 public class MazeSpowner {
     private LinkedList<Point> _readyNodes; // 开表，用于存储准备雕刻的节点
@@ -24,7 +25,6 @@ public class MazeSpowner {
     public synchronized Maze spown(final int width, final int height) {
         try {
             setupSpowner(width, height);
-            System.out.println(_maze);
             doSpown();
             return _maze;
         } finally {
@@ -71,9 +71,9 @@ public class MazeSpowner {
         openStartNode();
 
         while (_readyNodes.size() > 0) {
-            //            long startCarveRandomNodeTime = System.currentTimeMillis();
+            //long startCarveRandomNodeTime = System.currentTimeMillis();
             carveRandomNode();
-            //            System.out.println("随机雕刻一个节点耗时 " + (System.currentTimeMillis() - startCarveRandomNodeTime) + " 毫秒");
+            //System.out.println("随机雕刻一个节点耗时 " + (System.currentTimeMillis() - startCarveRandomNodeTime) + " 毫秒");
         }
     }
 
@@ -123,7 +123,13 @@ public class MazeSpowner {
         return null;
     }
 
-    private Point getRandomNode(LinkedList<Point> nodes) {
+    /**
+     * 从节点列表里随机获取一个节点
+     * 
+     * @param nodes 要获取节点的列表
+     * @return
+     */
+    private Point getRandomNode(List<Point> nodes) {
         if (nodes.size() != 0)
             return nodes.get(random(nodes.size()));
         return null;
@@ -133,6 +139,12 @@ public class MazeSpowner {
         return (int) (Math.random() * bound);
     }
 
+    /**
+     * 获取一个节点相邻的节点
+     * 
+     * @param centerPoint 中央的节点
+     * @return
+     */
     private LinkedList<Point> getContiguousNodes(final Point centerPoint) {
         LinkedList<Point> nodes = new LinkedList<Point>();
 
