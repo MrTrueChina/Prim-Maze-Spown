@@ -96,7 +96,12 @@ public class MainWindow {
             @Override
             public void keyReleased(KeyEvent e) {
                 try {
-                    _mazeWidth = Integer.parseInt(_widthText.getText());
+                    int width = Integer.parseInt(_widthText.getText());
+                    
+                    if(width > 0)
+                        _mazeWidth = width;
+                    else
+                        _widthText.setText(_mazeWidth + "");
                 } catch (Exception e2) {
                     _widthText.setText(_mazeWidth + "");
                 }
@@ -122,7 +127,12 @@ public class MainWindow {
             @Override
             public void keyReleased(KeyEvent e) {
                 try {
-                    _mazeHeight = Integer.parseInt(_heightText.getText());
+                    int height = Integer.parseInt(_heightText.getText());
+                    
+                    if(height > 0)
+                        _mazeHeight = height;
+                    else 
+                        _heightText.setText(_mazeHeight + "");
                 } catch (Exception e2) {
                     _heightText.setText(_mazeHeight + "");
                 }
@@ -148,7 +158,12 @@ public class MainWindow {
             @Override
             public void keyReleased(KeyEvent e) {
                 try {
-                    _mazeImageScale = Integer.parseInt(_scaleText.getText());
+                    int scale= Integer.parseInt(_scaleText.getText());
+                    
+                    if(scale > 0)
+                        _mazeImageScale = scale;
+                    else 
+                        _scaleText.setText(_mazeImageScale + "");
                 } catch (Exception e2) {
                     _scaleText.setText(_mazeImageScale + "");
                 }
